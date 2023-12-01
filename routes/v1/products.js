@@ -1,6 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/productsModel');
+const Product = require('../../models/productsModel');
+const multer = require('multer');
+const path = require('path');
+
+// Мультер middleware для загрузки изображений
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, './uploads/');
+    },
+    filename: (req, file, cb) => {
+      cb(null, `${Date.now()}-${file.originalname}`);
+    },
+  });
+  
+  const upload = multer({ storage });
+  
+  /**
+   * @swagger
+   * /products/upload:
+   *   post:
+   *     summary: Загружает изображение для продукта.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         multipart/form-data:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               image:
+   *                 type: string
+   *                 format: binary
+   *     responses:
+   *       200:
+   *         description: Успешная загрузка изображения.
+   *         content:
+   *           text/plain:
+   *             example: 'Image uploaded: /uploads/1617625858661-image1.jpg'
+   *       400:
+   *         description: Ошибка загрузки изображения.
+   */
+  router.post('/upload', upload.single('image'), (req, res) => {
+    if (req.file) {
+      const imagePath = `/uploads/${Date.now()}-${req.file.originalname}`;
+      res.send(`Image uploaded: ${imagePath}`);
+    } else {
+      res.status(400).send('Error uploading image.');
+    }
+  });
 
 /**
  * @swagger
@@ -23,6 +70,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+// middleware для получения информации о товаре 
 /**
  * @swagger
  * /products/{productId}:

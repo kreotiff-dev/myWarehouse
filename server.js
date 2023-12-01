@@ -44,8 +44,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
 
 // Подключение маршрутов
-const categoriesRoutes = require('./routes/categories');
-const productsRoutes = require('./routes/products');
+const categoriesRoutes = require('./routes/v1/categories');
+const productsRoutes = require('./routes/v1/products');
 
 app.use('/categories', categoriesRoutes);
 app.use('/products', productsRoutes);

@@ -1,6 +1,6 @@
 {
   "name": "mywarehouse",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "My app for practice testing",
   "main": "index.js",
   "scripts": {
@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/kreotiff-dev/myWarehouse/issues"
   },
-  "homepage": "https://github.com/kreotiff-dev/myWarehouse#readme"
+  "homepage": "https://github.com/kreotiff-dev/myWarehouse#readme",
+  "directories": {
+    "doc": "docs"
+  }
 }

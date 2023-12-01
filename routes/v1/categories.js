@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Category = require('../models/categoriesModel');
-const Product = require('../models/productsModel');
+const Category = require('../../models/categoriesModel');
+const Product = require('../../models/productsModel');
 
 /**
  * @swagger
