@@ -41,7 +41,3 @@ const categories = [
     const categoryProducts = products.filter((p) => p.categoryId === categoryId);
     res.json(categoryProducts);
   });
-  
-  app.listen(port, () => {
-    console.log(`Сервер запущен на порту ${port}`);
-  });
