@@ -1,43 +1,70 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const multer = require('multer');
 const app = express();
 const port = 3023;
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('API работает!');
-});
-
-app.listen(port, () => {
-  console.log(`Сервер запущен на порту ${port}`);
-});
-// Заглушки для тестовых данных
-const categories = [
-    { id: 1, name: 'Электроника', subcategories: ['Смартфоны', 'Телевизоры', 'Холодильники', 'Игровые приставки', 'Бытовая техника'] },
-    { id: 2, name: 'Мебель', subcategories: ['Домашняя мебель', 'Мебель для дачи'] },
-    { id: 3, name: 'Одежда', subcategories: ['Женская', 'Мужская'] },
-  ];
-  
-  const products = [
-    { id: 1, categoryId: 1, name: 'Смартфон', price: 500, discountPrice: 450, description: 'Описание смартфона', images: ['image1.jpg', 'image2.jpg'], rating: 4 },
-    // Добавьте другие товары
-  ];
-  
-  // Роут для получения списка категорий
-  app.get('/categories', (req, res) => {
-    res.json(categories);
+// Настройка multer
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Папка, куда будут сохраняться изображения
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname); // Уникальное имя файла
+    },
   });
   
-  // Роут для получения списка товаров по категории
-  app.get('/categories/:categoryId/products', (req, res) => {
-    const categoryId = parseInt(req.params.categoryId);
-    const category = categories.find((c) => c.id === categoryId);
+  const upload = multer({ storage: storage });
+
+// Подключение к базе данных
+mongoose.connect('mongodb://localhost:27017/myWarehouseDB', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Определите опции для Swagger
+const options = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Документация для API myWarehouse app',
+        version: '0.0.1',
+        description: 'Здесь описаны основные enpoints проекта myWarehouse',
+      },
+    },
+    apis: ['./routes/*.js'], // Путь к файлам содержащие JSDoc-комментарии
+  };
   
-    if (!category) {
-      res.status(404).json({ error: 'Категория не найдена' });
-      return;
+  const swaggerSpec = swaggerJsdoc(options);
+
+// Используйте Swagger UI для предоставления документации
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(express.json());
+
+// Подключение маршрутов
+const categoriesRoutes = require('./routes/categories');
+const productsRoutes = require('./routes/products');
+
+app.use('/categories', categoriesRoutes);
+app.use('/products', productsRoutes);
+
+// Эндпоинт для загрузки изображений
+app.post('/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
     }
   
-    const categoryProducts = products.filter((p) => p.categoryId === categoryId);
-    res.json(categoryProducts);
+    const imagePath = '/uploads/' + req.file.filename;
+    res.send('Image uploaded: ' + imagePath);
+  });
+
+// Запуск сервера
+app.get('/', (req, res) => {
+    res.send('API работает!');
+  });
+  
+  app.listen(port, () => {
+    console.log(`Сервер запущен на порту ${port}`);
   });
