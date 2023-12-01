@@ -3,36 +3,6 @@ const router = express.Router();
 const Category = require('../../models/categoriesModel');
 const Product = require('../../models/productsModel');
 
-/**
- * @swagger
- * /api/v1/categories:
- *   get:
- *     summary: Возвращает список категорий.
- *     responses:
- *       200:
- *         description: Успешный ответ
- *         content:
- *           application/json:
- *             example:
- *               - id: 1
- *                 name: Электроника
- *                 subcategories:
- *                   - Смартфоны
- *                   - Телевизоры
- *                   - Холодильники
- *                   - Игровые приставки
- *                   - Бытовая техника
- *               - id: 2
- *                 name: Мебель
- *                 subcategories:
- *                   - Домашняя мебель
- *                   - Мебель для дачи
- *               - id: 3
- *                 name: Одежда
- *                 subcategories:
- *                   - Женская
- *                   - Мужская
- */
 router.get('/', async (req, res) => {
   try {
     const categories = await Category.find();
@@ -42,35 +12,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /api/v1/categories/{categoryId}/products:
- *   get:
- *     summary: Возвращает список товаров по указанной категории.
- *     parameters:
- *       - in: path
- *         name: categoryId
- *         required: true
- *         description: ID категории
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Успешный ответ
- *         content:
- *           application/json:
- *             example:
- *               - id: 1
- *                 categoryId: 1
- *                 name: Смартфон
- *                 price: 500
- *                 discountPrice: 450
- *                 description: Описание смартфона
- *                 images:
- *                   - image1.jpg
- *                   - image2.jpg
- *                 rating: 4
- */
 router.get('/:categoryId/products', async (req, res) => {
     const categoryId = req.params.categoryId;
     try {

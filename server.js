@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const YAML = require('yaml');
+const fs = require('fs');
 const multer = require('multer');
 const app = express();
 const port = 3023;
@@ -25,26 +26,28 @@ mongoose.connect('mongodb://localhost:27017/myWarehouseDB', {
 });
 
 // Определите опции для Swagger
-const options = {
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'Документация для API myWarehouse app',
-        version: '0.1.0',
-        description: 'Здесь описаны основные enpoints проекта myWarehouse',
-      },
-    },
-    apis: ['./routes/v1/*.js'], // Путь к файлам содержащие JSDoc-комментарии
-  };
+// const options = {
+//     definition: {
+//       openapi: '3.0.0',
+//       info: {
+//         title: 'Документация для API myWarehouse app',
+//         version: '0.1.0',
+//         description: 'Здесь описаны основные enpoints проекта myWarehouse',
+//       },
+//     },
+//     apis: ['./routes/v1/*.js'], // Путь к файлам содержащие JSDoc-комментарии
+//   };
   
-  const swaggerSpec = swaggerJsdoc(options);
+//   const swaggerSpec = swaggerJsdoc(options);
+// Загрузка файла swagger.yaml
+const swaggerDocument = YAML.parse(fs.readFileSync('./docs/swagger.yaml', 'utf8'));
 
 // Используйте Swagger UI для предоставления документации
 app.use('/api-docs/:version', swaggerUi.serve, (req, res, next) => {
     // Добавьте динамическую версию к URL Swagger UI
-    swaggerUi.setup(swaggerSpec, { swaggerOptions: { url: `/api-docs/${req.params.version}` } })(req, res, next);
+    swaggerUi.setup(swaggerDocument, { swaggerOptions: { url: `/api-docs/${req.params.version}` } })(req, res, next);
   });
-  
+
 app.use(express.json());
 
 // Подключение маршрутов
@@ -53,16 +56,6 @@ const productsRoutes = require('./routes/v1/products');
 
 app.use('/api/v1/categories', categoriesRoutes);
 app.use('/api/v1/products', productsRoutes);
-
-// Эндпоинт для загрузки изображений
-app.post('/api/v1/upload', upload.single('image'), (req, res) => {
-    if (!req.file) {
-      return res.status(400).send('No file uploaded.');
-    }
-  
-    const imagePath = '/uploads/' + req.file.filename;
-    res.send('Image uploaded: ' + imagePath);
-  });
 
 // Запуск сервера
 app.get('/', (req, res) => {

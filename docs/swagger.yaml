@@ -1,0 +1,224 @@
+openapi: 3.0.0
+info:
+  title: "Спецификация к API приложения myWarehouse"
+  version: "0.1.0"
+tags:
+  - name: Categories
+    description: API для работы с категориями товаров
+  - name: Products
+    description: API для работы с продуктами
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        subcategories:
+          type: array
+          items:
+            type: string
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        categoryId:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        discountPrice:
+          type: number
+        description:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        rating:
+          type: number
+
+paths:
+  /api/v1/categories:
+    get:
+      summary: Возвращает список категорий.
+      tags:
+        - Categories
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: Электроника
+                  subcategories:
+                    - Смартфоны
+                    - Телевизоры
+                    - Холодильники
+                    - Игровые приставки
+                    - Бытовая техника
+                - id: 2
+                  name: Мебель
+                  subcategories:
+                    - Домашняя мебель
+                    - Мебель для дачи
+                - id: 3
+                  name: Одежда
+                  subcategories:
+                    - Женская
+                    - Мужская
+
+  /api/v1/categories/{categoryId}/products:
+    get:
+      summary: Возвращает список товаров по указанной категории.
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: categoryId
+          required: true
+          description: ID категории
+          schema:
+            type: string
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              example:
+                - id: 1
+                  categoryId: 1
+                  name: Смартфон
+                  price: 500
+                  discountPrice: 450
+                  description: Описание смартфона
+                  images:
+                    - image1.jpg
+                    - image2.jpg
+                  rating: 4
+
+  /api/v1/products/upload:
+    post:
+      summary: Загружает изображение для продукта.
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: Успешная загрузка изображения.
+          content:
+            text/plain:
+              example: "Image uploaded: /uploads/1617625858661-image1.jpg"
+        400:
+          description: Ошибка загрузки изображения.
+
+  /api/v1/products:
+    get:
+      summary: Возвращает список всех продуктов.
+      tags:
+        - Products
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              example: [...]
+
+    post:
+      summary: Добавляет новый продукт.
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: { ...новый продукт... }
+      responses:
+        201:
+          description: Успешно создано
+          content:
+            application/json:
+              example: { ...новый продукт... }
+        500:
+          description: Ошибка сервера
+
+  /api/v1/products/{productId}:
+    get:
+      summary: Возвращает информацию о конкретном продукте.
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: ID продукта
+          schema:
+            type: string
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              example: { ... }
+
+    put:
+      summary: Обновляет информацию о продукте.
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: ID продукта
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example: { ...обновленные данные... }
+      responses:
+        200:
+          description: Успешно обновлено
+          content:
+            application/json:
+              example: { ...обновленный продукт... }
+        404:
+          description: Продукт не найден
+        500:
+          description: Ошибка сервера
+
+    delete:
+      summary: Удаляет продукт.
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          description: ID продукта
+          schema:
+            type: string
+      responses:
+        200:
+          description: Продукт успешно удален
+        404:
+          description: Продукт не найден
+        500:
+          description: Ошибка сервера
