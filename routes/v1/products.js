@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
   
   /**
    * @swagger
-   * /products/upload:
+   * /api/v1/products/upload:
    *   post:
    *     summary: Загружает изображение для продукта.
    *     requestBody:
@@ -51,7 +51,7 @@ const storage = multer.diskStorage({
 
 /**
  * @swagger
- * /v1/products:
+ * /api/v1/products:
  *   get:
  *     summary: Возвращает список всех продуктов.
  *     responses:
@@ -61,7 +61,7 @@ const storage = multer.diskStorage({
  *           application/json:
  *             example: [...]
  */
-router.get('/v1/products', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
     res.json(products);
@@ -73,7 +73,7 @@ router.get('/v1/products', async (req, res) => {
 // middleware для получения информации о товаре 
 /**
  * @swagger
- * /v1/products/{productId}:
+ * /api/v1/products/{productId}:
  *   get:
  *     summary: Возвращает информацию о конкретном продукте.
  *     parameters:
@@ -90,7 +90,7 @@ router.get('/v1/products', async (req, res) => {
  *           application/json:
  *             example: {...}
  */
-router.get('/v1/products/:productId', async (req, res) => {
+router.get('/:productId', async (req, res) => {
   const productId = req.params.productId;
   try {
     const product = await Product.findById(productId);
@@ -105,7 +105,7 @@ router.get('/v1/products/:productId', async (req, res) => {
 
 /**
  * @swagger
- * /v1/products:
+ * /api/v1/products:
  *   post:
  *     summary: Добавляет новый продукт.
  *     requestBody:
@@ -122,7 +122,7 @@ router.get('/v1/products/:productId', async (req, res) => {
  *       500:
  *         description: Ошибка сервера
  */
-router.post('/v1/products', async (req, res) => {
+router.post('/', async (req, res) => {
   const newProduct = req.body;
   try {
     const createdProduct = await Product.create(newProduct);
@@ -134,7 +134,7 @@ router.post('/v1/products', async (req, res) => {
 
 /**
  * @swagger
- * /v1/products/{productId}:
+ * /api/v1/products/{productId}:
  *   put:
  *     summary: Обновляет информацию о продукте.
  *     parameters:
@@ -176,7 +176,7 @@ router.put('/v1/products/:productId', async (req, res) => {
 
 /**
  * @swagger
- * /v1/products/{productId}:
+ * /api/v1/products/{productId}:
  *   delete:
  *     summary: Удаляет продукт.
  *     parameters:

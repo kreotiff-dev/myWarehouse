@@ -5,7 +5,7 @@ const Product = require('../../models/productsModel');
 
 /**
  * @swagger
- * /categories:
+ * /api/v1/categories:
  *   get:
  *     summary: Возвращает список категорий.
  *     responses:
@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /categories/{categoryId}/products:
+ * /api/v1/categories/{categoryId}/products:
  *   get:
  *     summary: Возвращает список товаров по указанной категории.
  *     parameters:

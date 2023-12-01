@@ -34,24 +34,28 @@ const options = {
         description: 'Здесь описаны основные enpoints проекта myWarehouse',
       },
     },
-    apis: ['./routes/*.js'], // Путь к файлам содержащие JSDoc-комментарии
+    apis: ['./routes/v1/*.js'], // Путь к файлам содержащие JSDoc-комментарии
   };
   
   const swaggerSpec = swaggerJsdoc(options);
 
 // Используйте Swagger UI для предоставления документации
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs/:version', swaggerUi.serve, (req, res, next) => {
+    // Добавьте динамическую версию к URL Swagger UI
+    swaggerUi.setup(swaggerSpec, { swaggerOptions: { url: `/api-docs/${req.params.version}` } })(req, res, next);
+  });
+  
 app.use(express.json());
 
 // Подключение маршрутов
 const categoriesRoutes = require('./routes/v1/categories');
 const productsRoutes = require('./routes/v1/products');
 
-app.use('/categories', categoriesRoutes);
-app.use('/products', productsRoutes);
+app.use('/api/v1/categories', categoriesRoutes);
+app.use('/api/v1/products', productsRoutes);
 
 // Эндпоинт для загрузки изображений
-app.post('/upload', upload.single('image'), (req, res) => {
+app.post('/api/v1/upload', upload.single('image'), (req, res) => {
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
     }
