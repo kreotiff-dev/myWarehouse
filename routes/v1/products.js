@@ -104,6 +104,26 @@ router.get('/:productId', async (req, res) => {
 });
 
 // Добавление нового продукта
+
+/**
+ * @swagger
+ * /products:
+ *   post:
+ *     summary: Добавляет новый продукт.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example: {...новый продукт...}
+ *     responses:
+ *       201:
+ *         description: Успешно создано
+ *         content:
+ *           application/json:
+ *             example: {...новый продукт...}
+ *       500:
+ *         description: Ошибка сервера
+ */
 router.post('/', async (req, res) => {
   const newProduct = req.body;
   try {
@@ -115,6 +135,35 @@ router.post('/', async (req, res) => {
 });
 
 // Обновление информации о продукте
+
+/**
+ * @swagger
+ * /products/{productId}:
+ *   put:
+ *     summary: Обновляет информацию о продукте.
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         description: ID продукта
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           example: {...обновленные данные...}
+ *     responses:
+ *       200:
+ *         description: Успешно обновлено
+ *         content:
+ *           application/json:
+ *             example: {...обновленный продукт...}
+ *       404:
+ *         description: Продукт не найден
+ *       500:
+ *         description: Ошибка сервера
+ */
 router.put('/:productId', async (req, res) => {
   const productId = req.params.productId;
   const updatedProduct = req.body;
@@ -130,6 +179,27 @@ router.put('/:productId', async (req, res) => {
 });
 
 // Удаление продукта
+
+/**
+ * @swagger
+ * /products/{productId}:
+ *   delete:
+ *     summary: Удаляет продукт.
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         description: ID продукта
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Продукт успешно удален
+ *       404:
+ *         description: Продукт не найден
+ *       500:
+ *         description: Ошибка сервера
+ */
 router.delete('/:productId', async (req, res) => {
   const productId = req.params.productId;
   try {
