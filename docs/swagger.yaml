@@ -74,6 +74,8 @@ paths:
                   subcategories:
                     - Женская
                     - Мужская
+              schema:
+                $ref: "#/components/schemas/Category"
 
   /api/v1/categories/{categoryId}/products:
     get:
@@ -138,7 +140,29 @@ paths:
           description: Успешный ответ
           content:
             application/json:
-              example: [...]
+              example:
+                - id: "1"
+                  name: "Продукт 1"
+                  price: 100
+                  discountPrice: 90
+                  description: "Описание продукта 1"
+                  images:
+                    - "image1.jpg"
+                    - "image2.jpg"
+                  rating: 4.5
+                - id: "2"
+                  name: "Продукт 2"
+                  price: 50
+                  discountPrice: 45
+                  description: "Описание продукта 2"
+                  images:
+                    - "image3.jpg"
+                    - "image4.jpg"
+                  rating: 3.8
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
 
     post:
       summary: Добавляет новый продукт.
@@ -148,19 +172,47 @@ paths:
         required: true
         content:
           application/json:
-            example: { ...новый продукт... }
+            example:
+              name: "Новый продукт"
+              price: 120
+              discountPrice: 110
+              description: "Описание нового продукта"
+              images:
+                - "new_image1.jpg"
+                - "new_image2.jpg"
+              rating: 4.2
       responses:
         201:
           description: Успешно создано
           content:
             application/json:
-              example: { ...новый продукт... }
+              example:
+                id: "3"
+                name: "Новый продукт"
+                price: 120
+                discountPrice: 110
+                description: "Описание нового продукта"
+                images:
+                  - "new_image1.jpg"
+                  - "new_image2.jpg"
+                rating: 4.2
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+          links:
+            GetProductsByProductsId:
+              operationId: getProduct
+              parameters:
+                productId: "$response.body#/id"
         500:
           description: Ошибка сервера
 
   /api/v1/products/{productId}:
     get:
       summary: Возвращает информацию о конкретном продукте.
+      operationId: getProduct
       tags:
         - Products
       parameters:
@@ -175,7 +227,20 @@ paths:
           description: Успешный ответ
           content:
             application/json:
-              example: { ... }
+              example:
+                id: "1"
+                name: "Продукт 1"
+                price: 100
+                discountPrice: 90
+                description: "Описание продукта 1"
+                images:
+                  - "image1.jpg"
+                  - "image2.jpg"
+                rating: 4.5
+        404:
+          description: Продукт не найден
+        500:
+          description: Ошибка сервера
 
     put:
       summary: Обновляет информацию о продукте.
@@ -192,13 +257,30 @@ paths:
         required: true
         content:
           application/json:
-            example: { ...обновленные данные... }
+            example:
+              name: "Обновленный продукт"
+              price: 110
+              discountPrice: 100
+              description: "Обновленное описание продукта"
+              images:
+                - "updated_image1.jpg"
+                - "updated_image2.jpg"
+              rating: 4.8
       responses:
         200:
           description: Успешно обновлено
           content:
             application/json:
-              example: { ...обновленный продукт... }
+              example:
+                id: "1"
+                name: "Обновленный продукт"
+                price: 110
+                discountPrice: 100
+                description: "Обновленное описание продукта"
+                images:
+                  - "updated_image1.jpg"
+                  - "updated_image2.jpg"
+                rating: 4.8
         404:
           description: Продукт не найден
         500:
