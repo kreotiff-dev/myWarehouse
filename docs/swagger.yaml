@@ -43,6 +43,9 @@ components:
             type: string
         rating:
           type: number
+      required:
+        - name
+        - price
 
 paths:
   /api/v1/categories:
@@ -181,6 +184,8 @@ paths:
                 - "new_image1.jpg"
                 - "new_image2.jpg"
               rating: 4.2
+            schema:
+              $ref: "#/components/schemas/Product"
       responses:
         201:
           description: Успешно создано
@@ -197,15 +202,7 @@ paths:
                   - "new_image2.jpg"
                 rating: 4.2
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-          links:
-            GetProductsByProductsId:
-              operationId: getProduct
-              parameters:
-                productId: "$response.body#/id"
+                $ref: "#/components/schemas/Product"
         500:
           description: Ошибка сервера
 
@@ -237,6 +234,8 @@ paths:
                   - "image1.jpg"
                   - "image2.jpg"
                 rating: 4.5
+              schema:
+                $ref: "#/components/schemas/Product"
         404:
           description: Продукт не найден
         500:
@@ -266,6 +265,8 @@ paths:
                 - "updated_image1.jpg"
                 - "updated_image2.jpg"
               rating: 4.8
+            schema:
+              $ref: "#/components/schemas/Product"
       responses:
         200:
           description: Успешно обновлено
@@ -281,6 +282,8 @@ paths:
                   - "updated_image1.jpg"
                   - "updated_image2.jpg"
                 rating: 4.8
+              schema:
+                $ref: "#/components/schemas/Product"
         404:
           description: Продукт не найден
         500:

@@ -25,20 +25,6 @@ mongoose.connect('mongodb://localhost:27017/myWarehouseDB', {
   useUnifiedTopology: true,
 });
 
-// Определите опции для Swagger
-// const options = {
-//     definition: {
-//       openapi: '3.0.0',
-//       info: {
-//         title: 'Документация для API myWarehouse app',
-//         version: '0.1.0',
-//         description: 'Здесь описаны основные enpoints проекта myWarehouse',
-//       },
-//     },
-//     apis: ['./routes/v1/*.js'], // Путь к файлам содержащие JSDoc-комментарии
-//   };
-  
-//   const swaggerSpec = swaggerJsdoc(options);
 // Загрузка файла swagger.yaml
 const swaggerDocument = YAML.parse(fs.readFileSync('./docs/swagger.yaml', 'utf8'));
 
