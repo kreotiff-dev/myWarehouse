@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../../models/productsModel').default;
+const Product = require('../../models/productsModel'); // убрал .default
 const multer = require('multer');
 const path = require('path');
 
@@ -39,6 +39,7 @@ router.get('/', async (req, res) => {
 router.get('/:productId', async (req, res) => {
   const productId = req.params.productId;
   try {
+    console.log('Full req object:', req);
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: 'Продукт не найден' });
@@ -59,7 +60,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/v1/products/:productId', async (req, res) => {
+router.put('/:productId', async (req, res) => {
   const productId = req.params.productId;
   const updatedProduct = req.body;
   try {
@@ -73,17 +74,24 @@ router.put('/v1/products/:productId', async (req, res) => {
   }
 });
 
-router.delete('/v1/products/:productId', async (req, res) => {
-  const productId = req.params.productId;
+router.delete('/:productId', async (req, res) => {
+    // console.log('Start of deletion handler'); 
+    const productId = req.params.productId;
   try {
+    // console.log('Deleting product with ID:', productId);
+    // console.log('Full req object:', req);
+    // console.log('req.params:', req.params);
     const deletedProduct = await Product.findByIdAndDelete(productId);
+    // console.log('End of deletion handler');
     if (!deletedProduct) {
       return res.status(404).json({ error: 'Продукт не найден' });
     }
     res.json({ message: 'Продукт удален успешно' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // console.error('Error during deletion:', error);
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
+
 
 module.exports = router;
